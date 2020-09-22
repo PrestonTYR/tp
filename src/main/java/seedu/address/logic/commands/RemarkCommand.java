@@ -1,8 +1,6 @@
 package seedu.address.logic.commands;
 
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_REMARK;
-import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
 import java.util.List;
 
@@ -15,29 +13,24 @@ import seedu.address.model.person.Remark;
 
 public class RemarkCommand extends Command {
 
+    public static final String MESSAGE_ADD_REMARK_SUCCESS = "Added remark to Person: %1$s";
+    public static final String MESSAGE_DELETE_REMARK_SUCCESS = "Removed remark from Person: %1$s";
     public static final String COMMAND_WORD = "remark";
-
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits the remark of the person identified "
             + "by the index number used in the last person listing. "
             + "Existing remark will be overwritten by the input.\n"
             + "Parameters: INDEX (must be a positive integer) "
-            + PREFIX_REMARK + "[REMARK]\n"
+            + "r/ [REMARK]\n"
             + "Example: " + COMMAND_WORD + " 1 "
-            + PREFIX_REMARK + "Likes to swim.";
-
+            + "r/ Likes to swim.";
     public static final String MESSAGE_NOT_IMPLEMENTED_YET = "Remark command not implemented yet";
-
-    public static final String MESSAGE_ARGUMENTS = "Index: %1$d, Remark: %2$s";
-
-    public static final String MESSAGE_ADD_REMARK_SUCCESS = "Added remark to Person: %1$s";
-    public static final String MESSAGE_DELETE_REMARK_SUCCESS = "Removed remark from Person: %1$s";
-
     private final Index index;
     private final Remark remark;
 
     /**
-     * @param index of the person in the filtered person list to edit the remark
-     * @param remark of the person to be updated to
+     * Constructor for a RemarkCommand
+     * @param index index to add remark to
+     * @param remark remark to be added
      */
     public RemarkCommand(Index index, Remark remark) {
         requireAllNonNull(index, remark);
@@ -57,9 +50,8 @@ public class RemarkCommand extends Command {
         Person personToEdit = lastShownList.get(index.getZeroBased());
         Person editedPerson = new Person(personToEdit.getName(), personToEdit.getPhone(), personToEdit.getEmail(),
                 personToEdit.getAddress(), remark, personToEdit.getTags());
-
         model.setPerson(personToEdit, editedPerson);
-        model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+        model.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
 
         return new CommandResult(generateSuccessMessage(editedPerson));
     }
@@ -74,20 +66,16 @@ public class RemarkCommand extends Command {
     }
 
     @Override
-    public boolean equals(Object other) {
-        // short circuit if same object
-        if (other == this) {
+    public boolean equals(Object obj) {
+        if (obj == this) {
             return true;
         }
 
-        // instanceof handles nulls
-        if (!(other instanceof RemarkCommand)) {
+        if (!(obj instanceof RemarkCommand)) {
             return false;
         }
 
-        // state check
-        RemarkCommand e = (RemarkCommand) other;
-        return index.equals(e.index)
-                && remark.equals(e.remark);
+        RemarkCommand e = (RemarkCommand) obj;
+        return index.equals(e.index) && remark.equals(e.remark);
     }
 }
